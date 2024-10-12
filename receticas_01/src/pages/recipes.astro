@@ -1,0 +1,61 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RecipeList from '../components/RecipeList';
+import { recipes } from '../data/recipes';
+
+const categories = [...new Set(recipes.map(recipe => recipe.category))];
+---
+
+<Layout title="Recetas">
+  <main>
+    <h1>Nuestras Recetas</h1>
+    <div class="category-filter">
+      <label for="category-select">Filtrar por categoría:</label>
+      <select id="category-select">
+        <option value="">Todas las categorías</option>
+        {categories.map(category => (
+          <option value={category}>{category}</option>
+        ))}
+      </select>
+    </div>
+    <RecipeList client:load recipes={recipes} />
+  </main>
+</Layout>
+
+<script>
+  const categorySelect = document.getElementById('category-select');
+  const recipeList = document.querySelector('.recipe-list');
+
+  if (categorySelect && recipeList) {
+    categorySelect.addEventListener('change', (event) => {
+      const selectedCategory = event.target.value;
+      recipeList.setAttribute('data-selected-category', selectedCategory);
+    });
+  }
+</script>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    color: #333;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .category-filter {
+    margin-bottom: 1rem;
+  }
+  select {
+    margin-left: 0.5rem;
+    padding: 0.25rem;
+  }
+</style>
